@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="./assets/favicon.png">
+    <link href="your-project-dir/icon-font/lineicons.css" rel="stylesheet" />
+    <title>Biblioteca Digital Informática</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="index.html"><img class="logo1" src="https://www.fcad.uner.edu.ar/wp-content/uploads/2024/03/cropped-cropped-Logo-FCAD-70-anos-blanco-1.png" alt="Logo"></a>
+            
+            <div class="header-center">
+                <h1>Biblioteca Digital</h1>
+                <h2>Tecnicatura Universitaria en Desarrollo Web</h2>
+            </div>
+            
+            <div class="header-right">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Buscar libros...">
+                </div>
+                <div class="category-selector">
+                    <select id="yearSelect">
+                        <option value="all">Todos los años</option>
+                        <option value="1er-ano">1er Año</option>
+                        <option value="2do-ano">2do Año</option>
+                    </select>
+                    
+                    <select id="semesterSelect">
+                        <option value="all">Todos los cuatrimestres</option>
+                        <option value="1er-cuatrimestre">1er Cuatrimestre</option>
+                        <option value="2do-cuatrimestre">2do Cuatrimestre</option>
+                    </select>
+                    
+                    <select id="subjectSelect">
+                        <option value="all">Todas las materias</option>
+                    </select>
+                    
+                    <select id="typeSelect">
+                        <option value="all">Todos los tipos</option>
+                        <option value="Obligatoria">Obligatoria</option>
+                        <option value="Optativa">Optativa</option>
+                    </select>
+    
+                    <button id="clearFiltersBtn" class="btn clear-btn">✖</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+
+    <main class="container" id="mainContent">
+        <!-- Contenido dinámico aquí -->
+    </main>
+
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closeModal">&times;</span>
+            <div id="modalContent">
+                <!-- Contenido del modal -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <img class="logo2" src="https://www.fcad.uner.edu.ar/wp-content/uploads/2024/03/cropped-cropped-Logo-FCAD-70-anos-blanco-1.png" alt="Logo">
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces Útiles</h3>
+                    <ul>
+                        <li><a href="https://campus.uner.edu.ar/fcad/login/index.php" target="_blank">Campus Virtual</a></li>
+                        <li><a href="https://g3autogestion.uner.edu.ar/g3w3/" target="_blank">SIU Guaraní</a></li>
+                        <li><a href="https://www.fcad.uner.edu.ar/" target="_blank">Facultad de Ciencias de la Administración</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Sumate a la comunidad</h3>
+                    <div class="social-links">
+                        <a href="https://discord.gg/M2b6B8HR" target="_blank" class="social-link"><img src="./assets/discord.png" alt="Discord"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Hecho por <a href="https://estebanchavez.dev.ar/">Esteban Chávez</a> y su amigo Claude.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
