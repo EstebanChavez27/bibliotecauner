@@ -670,6 +670,18 @@ footer {
         justify-content: center;
         width: 100%;
     }
+
+    .book-actions-overlay {
+        opacity: 1 !important; /* Asegura que los botones sean visibles */
+        bottom: 10px; /* Alineación de los botones */
+        right: 10px;
+        display: flex; /* Asegura que los botones estén en línea */
+        gap: 10px; /* Espaciado entre los botones */
+    }
+
+    .book-card {
+        position: relative; /* Asegura que el contenedor de los botones sea relativo */
+    }
 }
 
 .book-cover {
