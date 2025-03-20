@@ -381,30 +381,44 @@ document.getElementById('clearFiltersBtn').addEventListener('click', clearFilter
         }
     });
     
-    // Botones de descarga y compartir
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('download-btn')) {
-            const bookId = parseInt(e.target.dataset.id);
-            if (bookId) {
-                const book = booksData.find(b => b.id === bookId);
-                if (book) {
-                    window.open(book.driveLink, '_blank');
-                }
-            }
-            e.stopPropagation();
-        }
-        
-        if (e.target.classList.contains('share-btn')) {
-            const bookId = parseInt(e.target.dataset.id);
-            if (bookId) {
-                const book = booksData.find(b => b.id === bookId);
-                if (book) {
-                    shareBook(book.driveLink, book.title);
-                }
-            }
-            e.stopPropagation();
-        }
-    });
+
+// Manejo de clics en los botones de descarga y compartir
+document.addEventListener('click', function(e) {
+    let button = e.target.closest('.btn'); // Encuentra el botón más cercano dentro del clic
+    if (!button) return; // Si no es un botón, salir
+
+    e.preventDefault(); // Previene comportamientos inesperados
+    e.stopPropagation(); // Detiene la propagación del clic al bookCard
+
+    const bookId = parseInt(button.dataset.id);
+    if (!bookId) return; // Si no tiene un ID válido, salir
+
+    const book = booksData.find(b => b.id === bookId);
+    if (!book) return; // Si el libro no existe, salir
+
+    if (button.classList.contains('download-btn')) {
+        window.open(book.driveLink, '_blank');
+    } else if (button.classList.contains('share-btn')) {
+        shareBook(book.driveLink, book.title);
+    }
+});
+
+// Manejo de clic en el `bookCard` para abrir el modal
+document.addEventListener('click', function(e) {
+    let bookCard = e.target.closest('.book-card'); // Encuentra la tarjeta más cercana al clic
+    if (!bookCard) return; // Si no es una tarjeta, salir
+
+    // Verificar si el clic fue en un botón dentro de la tarjeta
+    if (e.target.closest('.btn')) return; // Evita que los botones activen el modal
+
+    const bookId = parseInt(bookCard.dataset.id);
+    if (!bookId) return; // Si no tiene un ID válido, salir
+
+    openBookModal(bookId); // Abre el modal solo si no se hizo clic en un botón
+});
+
+
+
 }
 
 function renderSearchResults(books) {
@@ -465,10 +479,12 @@ function createBookCard(book) {
     `;
 
     bookCard.addEventListener('click', function (e) {
-        if (!e.target.classList.contains('btn')) {
-            openBookModal(book.id);
-        }
+        if (e.target.closest('.btn')) return; // Si se hizo clic en un botón, no abrir el modal
+    
+        openBookModal(book.id);
     });
+    
+    
 
     return bookCard;
 }
