@@ -13,7 +13,7 @@ window.BIBLIOTECA_CONFIG = {
   DRIVE_ROOT_FOLDER_ID: "18nwSi3XYcgd9TXWOoPEohFmeK6RledF7",
   DRIVE_ROOT_URL: "https://drive.google.com/drive/folders/18nwSi3XYcgd9TXWOoPEohFmeK6RledF7",
   // Pega aquí tu URL de Google Apps Script (ej: "https://script.google.com/macros/s/AKfycb.../exec")
-  APPS_SCRIPT_URL: "",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycby5hYEPVVs5kv3ZgNPNgsmWKNlkkYS9YIkxtcz1NbXMbMF9WNOMF--TR2jze1nN22rJsg/exec",
   // Alternativa opcional: Netlify Function (/.netlify/functions/books) usando GOOGLE_DRIVE_API_KEY
   USE_NETLIFY_FUNCTION: true,
   NETLIFY_FUNCTION_URL: "/.netlify/functions/books",
