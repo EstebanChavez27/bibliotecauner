@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Biblioteca Digital UNER — Tecnicatura Universitaria en Desarrollo Web</title>
+  <meta name="description" content="Archivo bibliográfico online de la Tecnicatura Universitaria en Desarrollo Web (FCAD - UNER), sincronizado automáticamente con Google Drive." />
+  <link rel="icon" type="image/png" href="./assets/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body class="bg-ambient antialiased selection:bg-teal-500/30 selection:text-teal-200">
+  <!-- Top Navigation -->
+  <header class="glass-nav sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="font-display w-11 h-10 rounded-xl bg-gradient-to-br from-teal-400 to-sky-600 flex items-center justify-center text-slate-950 text-[9px] shadow-lg shadow-teal-500/20 shrink-0">
+          UNER
+        </div>
+        <div class="min-w-0">
+          <h1 class="font-display text-[11px] sm:text-xs leading-snug truncate">Biblioteca Digital UNER</h1>
+          <p class="text-[11px] sm:text-xs text-[var(--text-secondary)] truncate">Tecnicatura Universitaria en Desarrollo Web · FCAD</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <button type="button" id="syncStatusBtn" class="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-xl surface-soft text-xs font-medium hover:border-teal-400 transition">
+          <span id="syncDot" class="w-2 h-2 rounded-full bg-teal-400"></span>
+          <span id="syncLabel">Catálogo Drive</span>
+        </button>
+
+        <button type="button" id="favFilterBtn" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl surface-soft text-xs font-semibold hover:border-teal-400 transition" title="Ver favoritos">
+          <i data-lucide="bookmark" class="w-4 h-4"></i>
+          <span class="hidden sm:inline">Favoritos</span>
+          <span id="favBadgeCount" class="font-mono text-[11px] px-1.5 py-0.5 rounded-md bg-teal-500/15 text-teal-400">0</span>
+        </button>
+
+        <button type="button" id="themeToggleBtn" aria-label="Cambiar tema" class="p-2 rounded-xl surface-soft hover:border-teal-400 transition">
+          <i id="iconSun" data-lucide="sun" class="w-4 h-4 text-amber-300"></i>
+          <i id="iconMoon" data-lucide="moon" class="w-4 h-4 text-sky-600 hidden"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero & Search Panel -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-7 pb-4 space-y-5">
+    <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
+      <div class="space-y-1.5 max-w-2xl">
+        <div class="inline-flex items-center gap-2 text-xs font-semibold text-teal-400">
+          <i data-lucide="library" class="w-4 h-4"></i>
+          <span>Archivo bibliográfico de consulta online</span>
+        </div>
+        <h2 class="font-display text-base sm:text-xl lg:text-[22px] leading-relaxed">Toda la bibliografía de la carrera en un solo lugar</h2>
+        <p class="text-sm text-[var(--text-secondary)]">Explora, previsualiza o descarga los textos organizados por año, cuatrimestre y materia, conectados directamente a Google Drive.</p>
+      </div>
+
+      <!-- Compact Stats -->
+      <div class="grid grid-cols-3 gap-2.5 sm:gap-3 shrink-0">
+        <div class="surface-card rounded-xl px-3.5 py-2.5 text-center">
+          <div id="statTotalBooks" class="font-display text-sm sm:text-base text-teal-400 py-0.5">48</div>
+          <div class="text-[11px] text-[var(--text-secondary)]">Libros</div>
+        </div>
+        <div class="surface-card rounded-xl px-3.5 py-2.5 text-center">
+          <div id="statSubjects" class="font-display text-sm sm:text-base py-0.5">7/14</div>
+          <div class="text-[11px] text-[var(--text-secondary)]">Materias</div>
+        </div>
+        <div class="surface-card rounded-xl px-3.5 py-2.5 text-center">
+          <div id="statUpdated" class="text-xs sm:text-sm font-bold mt-1">—</div>
+          <div class="text-[11px] text-[var(--text-secondary)]">Actualizado</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search & Filters Card -->
+    <div class="surface-card rounded-2xl p-4 space-y-3.5">
+      <div class="space-y-3">
+        <div class="relative w-full">
+          <i data-lucide="search" class="w-4 h-4 text-[var(--text-muted)] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+          <input
+            id="searchInput"
+            type="search"
+            placeholder="Buscar por título, autor o materia… (atajo: /)"
+            class="control-input w-full pl-10 pr-4 py-2.5 rounded-xl text-sm"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
+          <select id="yearSelect" aria-label="Filtrar por año" class="control-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm"></select>
+          <select id="semesterSelect" aria-label="Filtrar por cuatrimestre" class="control-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm"></select>
+          <select id="subjectSelect" aria-label="Filtrar por materia" class="control-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm"></select>
+          <select id="sortSelect" aria-label="Ordenar libros" class="control-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm">
+            <option value="plan">Orden del plan</option>
+            <option value="title">Título (A–Z)</option>
+            <option value="author">Autor (A–Z)</option>
+            <option value="recent">Más recientes</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Quick Subject Pills -->
+      <div id="subjectPills" class="flex items-center gap-2 overflow-x-auto pb-1"></div>
+
+      <!-- Toolbar Footer -->
+      <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-[var(--border-subtle)] text-xs">
+        <div class="flex flex-wrap items-center gap-4">
+          <span id="resultsSummary" class="text-[var(--text-secondary)] font-medium">Cargando catálogo…</span>
+          <label class="inline-flex items-center gap-2 cursor-pointer text-[var(--text-secondary)] select-none">
+            <input id="hideEmptyToggle" type="checkbox" class="rounded accent-teal-500" />
+            <span>Ocultar materias sin libros</span>
+          </label>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button type="button" id="clearFiltersBtn" class="px-2.5 py-1.5 rounded-lg surface-soft hover:border-teal-400 text-[var(--text-secondary)] hover:text-teal-400 transition">
+            Limpiar filtros
+          </button>
+          <div class="inline-flex rounded-lg surface-soft p-0.5">
+            <button type="button" id="viewGridBtn" aria-label="Vista en grilla" class="p-1.5 rounded-md transition">
+              <i data-lucide="layout-grid" class="w-4 h-4"></i>
+            </button>
+            <button type="button" id="viewListBtn" aria-label="Vista en lista" class="p-1.5 rounded-md transition">
+              <i data-lucide="list" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Catalog -->
+  <main id="catalogContent" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 pb-16 space-y-12"></main>
+
+  <!-- Footer -->
+  <footer class="border-t border-[var(--border-subtle)] bg-[var(--bg-surface)]/60">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[var(--text-secondary)]">
+      <div>
+        <p class="font-semibold text-[var(--text-primary)]">Biblioteca Digital · Tecnicatura Universitaria en Desarrollo Web (UNER)</p>
+        <p class="mt-0.5">Archivo abierto de consulta mantenido por Esteban Chávez.</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-4">
+        <a href="https://drive.google.com/drive/folders/18nwSi3XYcgd9TXWOoPEohFmeK6RledF7" target="_blank" rel="noopener noreferrer" class="hover:text-teal-400 transition">Carpeta en Drive</a>
+        <a href="https://www.fcad.uner.edu.ar/" target="_blank" rel="noopener noreferrer" class="hover:text-teal-400 transition">FCAD UNER</a>
+        <a href="https://g3autogestion.uner.edu.ar/g3w3/acceso" target="_blank" rel="noopener noreferrer" class="hover:text-teal-400 transition">SIU Guaraní</a>
+        <a href="https://github.com/EstebanChavez27/bibliotecauner" target="_blank" rel="noopener noreferrer" class="hover:text-teal-400 transition">GitHub</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Book Detail Modal -->
+  <div id="bookModal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="surface-card rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto p-5 sm:p-6 relative">
+      <button type="button" id="closeBookModalBtn" aria-label="Cerrar detalle" class="absolute top-4 right-4 p-2 rounded-xl surface-soft hover:border-teal-400 transition">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+      <div id="bookModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Sync Info Modal -->
+  <div id="syncModal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="surface-card rounded-2xl w-full max-w-lg p-6 relative space-y-4">
+      <button type="button" id="closeSyncModalBtn" aria-label="Cerrar ventana de sincronización" class="absolute top-4 right-4 p-2 rounded-xl surface-soft hover:border-teal-400 transition">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-teal-500/15 text-teal-400 flex items-center justify-center">
+          <i data-lucide="refresh-cw" id="syncRefreshIcon" class="w-4 h-4"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-base">Sincronización automática con Google Drive</h3>
+          <p class="text-xs text-[var(--text-secondary)]">Carpeta raíz: 18nwSi3XYcgd9TXWOoPEohFmeK6RledF7</p>
+        </div>
+      </div>
+      <p id="syncModalStatus" class="text-sm text-[var(--text-secondary)] leading-relaxed"></p>
+      <div class="surface-soft rounded-xl p-3.5 text-xs space-y-1.5 text-[var(--text-secondary)]">
+        <p class="font-semibold text-[var(--text-primary)]">Cómo funciona al subir nuevos libros:</p>
+        <p>1. Sube cualquier PDF dentro de su carpeta de materia en Drive (admite subcarpetas como <code class="font-mono">Bibliografía/</code>).</p>
+        <p>2. Usa el formato <code class="font-mono">Título del Libro - Autor.pdf</code> para separar título y autor automáticamente.</p>
+        <p>3. La web detecta y publica los nuevos archivos sola (sin tocar el código ni Netlify).</p>
+      </div>
+      <div class="flex items-center justify-end gap-2.5 pt-1">
+        <a href="https://drive.google.com/drive/folders/18nwSi3XYcgd9TXWOoPEohFmeK6RledF7" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl surface-soft text-xs font-semibold hover:border-teal-400 transition">
+          Abrir Google Drive
+        </a>
+        <button type="button" id="syncNowBtn" class="px-4 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 text-xs font-semibold transition">
+          Sincronizar ahora
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+  <script src="./config.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
