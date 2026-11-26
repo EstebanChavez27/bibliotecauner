@@ -36,7 +36,7 @@
         <button type="button" id="favFilterBtn" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl surface-soft text-xs font-semibold hover:border-teal-400 transition" title="Ver favoritos">
           <i data-lucide="bookmark" class="w-4 h-4"></i>
           <span class="hidden sm:inline">Favoritos</span>
-          <span id="favBadgeCount" class="font-mono text-[11px] px-1.5 py-0.5 rounded-md bg-teal-500/15 text-teal-400">0</span>
+          <span id="favBadgeCount" class="text-[11px] px-1.5 py-0.5 rounded-md bg-teal-500/15 text-teal-400">0</span>
         </button>
 
         <button type="button" id="themeToggleBtn" aria-label="Cambiar tema" class="p-2 rounded-xl surface-soft hover:border-teal-400 transition">
@@ -50,19 +50,19 @@
   <!-- Hero & Search Panel -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-7 pb-4 space-y-5">
     <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
-      <div class="space-y-1.5 max-w-2xl">
+      <div class="space-y-2 max-w-2xl">
         <div class="inline-flex items-center gap-2 text-xs font-semibold text-teal-400">
           <i data-lucide="library" class="w-4 h-4"></i>
           <span>Archivo bibliográfico de consulta online</span>
         </div>
         <h2 class="font-display text-base sm:text-xl lg:text-[22px] leading-relaxed">Toda la bibliografía de la carrera en un solo lugar</h2>
-        <p class="text-sm text-[var(--text-secondary)]">Explora, previsualiza o descarga los textos organizados por año, cuatrimestre y materia, conectados directamente a Google Drive.</p>
+        <p class="text-xs sm:text-sm text-[var(--text-secondary)]">Explora, filtra por temas o materias, previsualiza y descarga textos conectados directamente a Google Drive.</p>
       </div>
 
       <!-- Compact Stats -->
       <div class="grid grid-cols-3 gap-2.5 sm:gap-3 shrink-0">
         <div class="surface-card rounded-xl px-3.5 py-2.5 text-center">
-          <div id="statTotalBooks" class="font-display text-sm sm:text-base text-teal-400 py-0.5">48</div>
+          <div id="statTotalBooks" class="font-display text-sm sm:text-base text-teal-400 py-0.5">49</div>
           <div class="text-[11px] text-[var(--text-secondary)]">Libros</div>
         </div>
         <div class="surface-card rounded-xl px-3.5 py-2.5 text-center">
@@ -84,14 +84,14 @@
           <input
             id="searchInput"
             type="search"
-            placeholder="Buscar por título, autor o materia… (atajo: /)"
-            class="control-input w-full pl-10 pr-4 py-2.5 rounded-xl text-sm"
+            placeholder="Buscar por título, autor, materia o tema… (atajo: /)"
+            class="control-input w-full pl-10 pr-4 py-2.5 rounded-xl text-xs sm:text-sm"
             autocomplete="off"
           />
         </div>
 
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
-          <select id="yearSelect" aria-label="Filtrar por año" class="control-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm"></select>
+          <select id="yearSelect" aria-label="Filtrar por año o sección" class="control-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm"></select>
           <select id="semesterSelect" aria-label="Filtrar por cuatrimestre" class="control-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm"></select>
           <select id="subjectSelect" aria-label="Filtrar por materia" class="control-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm"></select>
           <select id="sortSelect" aria-label="Ordenar libros" class="control-input w-full px-3 py-2 rounded-xl text-xs sm:text-sm">
@@ -104,7 +104,16 @@
       </div>
 
       <!-- Quick Subject Pills -->
-      <div id="subjectPills" class="flex items-center gap-2 overflow-x-auto pb-1"></div>
+      <div class="space-y-1.5">
+        <div class="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-semibold">Materias y secciones</div>
+        <div id="subjectPills" class="flex items-center gap-2 overflow-x-auto pb-1"></div>
+      </div>
+
+      <!-- Multi-Topic Filter Pills -->
+      <div class="space-y-1.5">
+        <div class="text-[10px] uppercase tracking-wider text-[var(--text-muted)] font-semibold">Temas automáticos (puedes combinar varios)</div>
+        <div id="topicPills" class="flex items-center gap-1.5 overflow-x-auto pb-1"></div>
+      </div>
 
       <!-- Toolbar Footer -->
       <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-[var(--border-subtle)] text-xs">
@@ -173,16 +182,16 @@
           <i data-lucide="refresh-cw" id="syncRefreshIcon" class="w-4 h-4"></i>
         </div>
         <div>
-          <h3 class="font-bold text-base">Sincronización automática con Google Drive</h3>
+          <h3 class="font-bold text-sm sm:text-base">Sincronización automática con Google Drive</h3>
           <p class="text-xs text-[var(--text-secondary)]">Carpeta raíz: 18nwSi3XYcgd9TXWOoPEohFmeK6RledF7</p>
         </div>
       </div>
-      <p id="syncModalStatus" class="text-sm text-[var(--text-secondary)] leading-relaxed"></p>
+      <p id="syncModalStatus" class="text-xs sm:text-sm text-[var(--text-secondary)] leading-relaxed"></p>
       <div class="surface-soft rounded-xl p-3.5 text-xs space-y-1.5 text-[var(--text-secondary)]">
         <p class="font-semibold text-[var(--text-primary)]">Cómo funciona al subir nuevos libros:</p>
-        <p>1. Sube cualquier PDF dentro de su carpeta de materia en Drive (admite subcarpetas como <code class="font-mono">Bibliografía/</code>).</p>
-        <p>2. Usa el formato <code class="font-mono">Título del Libro - Autor.pdf</code> para separar título y autor automáticamente.</p>
-        <p>3. La web detecta y publica los nuevos archivos sola (sin tocar el código ni Netlify).</p>
+        <p>1. Sube PDFs en su carpeta de materia o en la carpeta raíz <code>Varios</code>.</p>
+        <p>2. Usa <code>Título - Autor.pdf</code>; las categorías temáticas se asignan solas (y puedes forzar extras con <code>[Tema]</code> en el nombre).</p>
+        <p>3. La web detecta y publica los archivos nuevos automáticamente.</p>
       </div>
       <div class="flex items-center justify-end gap-2.5 pt-1">
         <a href="https://drive.google.com/drive/folders/18nwSi3XYcgd9TXWOoPEohFmeK6RledF7" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl surface-soft text-xs font-semibold hover:border-teal-400 transition">

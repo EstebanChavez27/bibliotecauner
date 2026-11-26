@@ -2,9 +2,9 @@
   --bg-page: #07131f;
   --bg-surface: #0c1d2e;
   --bg-surface-2: #12283e;
-  --bg-glass: rgba(7, 19, 31, 0.82);
+  --bg-glass: rgba(7, 19, 31, 0.84);
   --border-subtle: rgba(148, 163, 184, 0.16);
-  --border-strong: rgba(45, 212, 191, 0.35);
+  --border-strong: rgba(45, 212, 191, 0.38);
   --text-primary: #f1f5f9;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
@@ -18,7 +18,7 @@ html.light {
   --bg-page: #f4f7fb;
   --bg-surface: #ffffff;
   --bg-surface-2: #eef3f9;
-  --bg-glass: rgba(255, 255, 255, 0.86);
+  --bg-glass: rgba(255, 255, 255, 0.88);
   --border-subtle: rgba(15, 23, 42, 0.1);
   --border-strong: rgba(13, 148, 136, 0.35);
   --text-primary: #0f172a;
@@ -158,7 +158,8 @@ html.light .book-card:hover {
   box-shadow: 0 0 0 3px var(--accent-soft);
 }
 
-.subject-pill {
+.subject-pill,
+.topic-pill {
   background-color: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
@@ -170,6 +171,32 @@ html.light .book-card:hover {
   background-color: var(--accent-soft);
   border-color: var(--accent);
   color: var(--accent);
+}
+
+.topic-pill:hover,
+.topic-pill.active {
+  background-color: rgba(14, 165, 233, 0.16);
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
+html.light .topic-pill:hover,
+html.light .topic-pill.active {
+  background-color: rgba(2, 132, 199, 0.12);
+  border-color: #0284c7;
+  color: #0284c7;
+}
+
+.topic-chip {
+  background-color: var(--bg-surface-2);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+}
+
+.topic-chip:hover {
+  border-color: #38bdf8;
+  color: #38bdf8;
 }
 
 .modal-backdrop {

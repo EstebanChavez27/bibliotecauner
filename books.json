@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-25T16:55:00Z",
-  "source": "Google Drive (snapshot inicial)",
+  "generatedAt": "2026-11-26T09:40:00Z",
+  "source": "Google Drive (snapshot actualizado)",
   "rootFolderId": "18nwSi3XYcgd9TXWOoPEohFmeK6RledF7",
   "rootFolderUrl": "https://drive.google.com/drive/folders/18nwSi3XYcgd9TXWOoPEohFmeK6RledF7",
   "subjects": [
@@ -11,6 +11,7 @@
       "semester": "1er Cuatrimestre",
       "folderId": "1d5cx14LmSELwbgfJtoPcq8nHmBvR1Dii",
       "accent": "#0ea5e9",
+      "isExtra": false,
       "fullName": "01 - Introducción a la Informática",
       "folderUrl": "https://drive.google.com/drive/folders/1d5cx14LmSELwbgfJtoPcq8nHmBvR1Dii"
     },
@@ -21,6 +22,7 @@
       "semester": "1er Cuatrimestre",
       "folderId": "1FAmWgVNv2FKmAPApjOEUtF-jHV_IoWqD",
       "accent": "#14b8a6",
+      "isExtra": false,
       "fullName": "02 - Programación I",
       "folderUrl": "https://drive.google.com/drive/folders/1FAmWgVNv2FKmAPApjOEUtF-jHV_IoWqD"
     },
@@ -31,6 +33,7 @@
       "semester": "1er Cuatrimestre",
       "folderId": "12vP5F1qIFD8M0hWzehlB8m_CLTteVYpP",
       "accent": "#6366f1",
+      "isExtra": false,
       "fullName": "03 - Arquitectura de Computadoras",
       "folderUrl": "https://drive.google.com/drive/folders/12vP5F1qIFD8M0hWzehlB8m_CLTteVYpP"
     },
@@ -41,6 +44,7 @@
       "semester": "2do Cuatrimestre",
       "folderId": "1EN1OTljXtb7hU_CqoIpcEY-JggDNyb8W",
       "accent": "#10b981",
+      "isExtra": false,
       "fullName": "04 - Programación II",
       "folderUrl": "https://drive.google.com/drive/folders/1EN1OTljXtb7hU_CqoIpcEY-JggDNyb8W"
     },
@@ -51,6 +55,7 @@
       "semester": "2do Cuatrimestre",
       "folderId": "1LZlfqPodZpNRO4T7KTCxJUIlumPRMs5R",
       "accent": "#f59e0b",
+      "isExtra": false,
       "fullName": "05 - Sistemas Operativos",
       "folderUrl": "https://drive.google.com/drive/folders/1LZlfqPodZpNRO4T7KTCxJUIlumPRMs5R"
     },
@@ -61,6 +66,7 @@
       "semester": "2do Cuatrimestre",
       "folderId": "127xjeh4QCi4lJH17ovGTrZR0oDq5ROoU",
       "accent": "#ec4899",
+      "isExtra": false,
       "fullName": "06 - Base de Datos",
       "folderUrl": "https://drive.google.com/drive/folders/127xjeh4QCi4lJH17ovGTrZR0oDq5ROoU"
     },
@@ -71,6 +77,7 @@
       "semester": "2do Cuatrimestre",
       "folderId": "1QNB39uReh3C-m1ELSHyhC_iJSCV5Q9h0",
       "accent": "#06b6d4",
+      "isExtra": false,
       "fullName": "07 - Introducción al Desarrollo Web",
       "folderUrl": "https://drive.google.com/drive/folders/1QNB39uReh3C-m1ELSHyhC_iJSCV5Q9h0"
     },
@@ -81,6 +88,7 @@
       "semester": "1er Cuatrimestre",
       "folderId": "1joOkkzt59UHDkieHw0TM5uxaeJxHNtGI",
       "accent": "#3b82f6",
+      "isExtra": false,
       "fullName": "08 - Redes de Datos",
       "folderUrl": "https://drive.google.com/drive/folders/1joOkkzt59UHDkieHw0TM5uxaeJxHNtGI"
     },
@@ -91,6 +99,7 @@
       "semester": "1er Cuatrimestre",
       "folderId": "1IuVFUWS72WG2Xb4ZPKHuhTWn7k3ZCCQf",
       "accent": "#f43f5e",
+      "isExtra": false,
       "fullName": "09 - Diseño Gráfico",
       "folderUrl": "https://drive.google.com/drive/folders/1IuVFUWS72WG2Xb4ZPKHuhTWn7k3ZCCQf"
     },
@@ -101,6 +110,7 @@
       "semester": "1er Cuatrimestre",
       "folderId": "1KHHdajx_aSJiNplqjdOZAnTX5J1jIVG_",
       "accent": "#8b5cf6",
+      "isExtra": false,
       "fullName": "10 - Programación III",
       "folderUrl": "https://drive.google.com/drive/folders/1KHHdajx_aSJiNplqjdOZAnTX5J1jIVG_"
     },
@@ -111,6 +121,7 @@
       "semester": "2do Cuatrimestre",
       "folderId": "19thMbLB9xQ_M_BwblqWuL8HUoVEy2sjo",
       "accent": "#22c55e",
+      "isExtra": false,
       "fullName": "11 - Ingeniería de Software",
       "folderUrl": "https://drive.google.com/drive/folders/19thMbLB9xQ_M_BwblqWuL8HUoVEy2sjo"
     },
@@ -121,6 +132,7 @@
       "semester": "2do Cuatrimestre",
       "folderId": "1o2eQiFeFbsMrCI7Dh9xrrGULQhjeJT8l",
       "accent": "#0284c7",
+      "isExtra": false,
       "fullName": "12 - Desarrollo de Aplicaciones Web",
       "folderUrl": "https://drive.google.com/drive/folders/1o2eQiFeFbsMrCI7Dh9xrrGULQhjeJT8l"
     },
@@ -131,6 +143,7 @@
       "semester": "2do Cuatrimestre",
       "folderId": "1Z-YTXkNgqIMdNTc2Tj3H9omr-Zy_pb-F",
       "accent": "#a855f7",
+      "isExtra": false,
       "fullName": "13 - Desarrollo para Móviles",
       "folderUrl": "https://drive.google.com/drive/folders/1Z-YTXkNgqIMdNTc2Tj3H9omr-Zy_pb-F"
     },
@@ -141,8 +154,20 @@
       "semester": "2do Cuatrimestre",
       "folderId": "1kDnqAzjdQK4eU-du1NivY57qvSu_Br0K",
       "accent": "#f97316",
+      "isExtra": false,
       "fullName": "14 - Multimedia y Juegos en Web",
       "folderUrl": "https://drive.google.com/drive/folders/1kDnqAzjdQK4eU-du1NivY57qvSu_Br0K"
+    },
+    {
+      "code": "VAR",
+      "name": "Varios",
+      "year": "Varios",
+      "semester": "Lecturas recomendadas",
+      "folderId": "1U62XZji6zn_MqR2be8UNRVwNxjjMzRFF",
+      "accent": "#eab308",
+      "isExtra": true,
+      "fullName": "Varios · Lecturas recomendadas",
+      "folderUrl": "https://drive.google.com/drive/folders/1U62XZji6zn_MqR2be8UNRVwNxjjMzRFF"
     }
   ],
   "books": [
@@ -155,6 +180,10 @@
       "subjectName": "Introducción a la Informática",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Fundamentos"
+      ],
       "format": "PDF",
       "sizeBytes": 11816207,
       "modifiedTime": "2025-03-19T21:07:02Z",
@@ -172,6 +201,10 @@
       "subjectName": "Introducción a la Informática",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Fundamentos"
+      ],
       "format": "PDF",
       "sizeBytes": 8002791,
       "modifiedTime": "2025-03-19T21:04:31Z",
@@ -189,6 +222,11 @@
       "subjectName": "Introducción a la Informática",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Sistemas Operativos",
+        "Fundamentos"
+      ],
       "format": "PDF",
       "sizeBytes": 4564416,
       "modifiedTime": "2025-03-19T21:09:54Z",
@@ -206,6 +244,10 @@
       "subjectName": "Introducción a la Informática",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Fundamentos"
+      ],
       "format": "PDF",
       "sizeBytes": 6203752,
       "modifiedTime": "2025-03-19T21:26:04Z",
@@ -223,6 +265,11 @@
       "subjectName": "Introducción a la Informática",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Bases de Datos",
+        "Fundamentos"
+      ],
       "format": "PDF",
       "sizeBytes": 13415630,
       "modifiedTime": "2025-03-19T21:12:39Z",
@@ -240,6 +287,11 @@
       "subjectName": "Introducción a la Informática",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Desarrollo Web",
+        "Fundamentos"
+      ],
       "format": "PDF",
       "sizeBytes": 1925815,
       "modifiedTime": "2025-03-19T21:20:53Z",
@@ -257,6 +309,11 @@
       "subjectName": "Introducción a la Informática",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Redes",
+        "Fundamentos"
+      ],
       "format": "PDF",
       "sizeBytes": 57313454,
       "modifiedTime": "2025-03-19T21:19:06Z",
@@ -274,6 +331,11 @@
       "subjectName": "Introducción a la Informática",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Redes",
+        "Fundamentos"
+      ],
       "format": "PDF",
       "sizeBytes": 22163785,
       "modifiedTime": "2025-03-19T21:16:18Z",
@@ -291,6 +353,11 @@
       "subjectName": "Programación I",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Python",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 941303,
       "modifiedTime": "2025-03-19T00:13:47Z",
@@ -308,6 +375,11 @@
       "subjectName": "Programación I",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Python",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 96141082,
       "modifiedTime": "2025-03-19T00:11:48Z",
@@ -325,6 +397,11 @@
       "subjectName": "Programación I",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Python",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 5932570,
       "modifiedTime": "2025-03-19T00:26:39Z",
@@ -342,6 +419,11 @@
       "subjectName": "Programación I",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Python",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 1358028,
       "modifiedTime": "2025-03-19T00:23:55Z",
@@ -359,6 +441,11 @@
       "subjectName": "Programación I",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Python",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 7020007,
       "modifiedTime": "2025-03-19T00:22:04Z",
@@ -376,6 +463,11 @@
       "subjectName": "Programación I",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Python",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 7940573,
       "modifiedTime": "2025-03-19T00:19:45Z",
@@ -393,6 +485,10 @@
       "subjectName": "Programación I",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 52050011,
       "modifiedTime": "2025-03-19T00:06:47Z",
@@ -410,6 +506,11 @@
       "subjectName": "Programación I",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "POO y Algoritmos",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 21897183,
       "modifiedTime": "2025-03-19T00:31:58Z",
@@ -427,6 +528,10 @@
       "subjectName": "Programación I",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 9325802,
       "modifiedTime": "2025-03-19T00:34:47Z",
@@ -444,6 +549,11 @@
       "subjectName": "Programación I",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Python",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 35104851,
       "modifiedTime": "2025-03-19T00:34:20Z",
@@ -461,6 +571,11 @@
       "subjectName": "Programación I",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "POO y Algoritmos",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 14438746,
       "modifiedTime": "2025-03-18T23:45:22Z",
@@ -478,6 +593,11 @@
       "subjectName": "Programación I",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Python",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 6587625,
       "modifiedTime": "2025-03-18T23:55:00Z",
@@ -495,6 +615,11 @@
       "subjectName": "Programación I",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Python",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 15779191,
       "modifiedTime": "2025-03-19T00:02:25Z",
@@ -512,6 +637,10 @@
       "subjectName": "Arquitectura de Computadoras",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "General"
+      ],
       "format": "PDF",
       "sizeBytes": 13166931,
       "modifiedTime": "2025-03-18T21:51:53Z",
@@ -529,6 +658,10 @@
       "subjectName": "Arquitectura de Computadoras",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Arquitectura"
+      ],
       "format": "PDF",
       "sizeBytes": 4902329,
       "modifiedTime": "2025-03-18T21:41:02Z",
@@ -546,6 +679,10 @@
       "subjectName": "Arquitectura de Computadoras",
       "year": "1er Año",
       "semester": "1er Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "General"
+      ],
       "format": "PDF",
       "sizeBytes": 34237581,
       "modifiedTime": "2025-03-18T21:46:28Z",
@@ -563,6 +700,12 @@
       "subjectName": "Programación II",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Python",
+        "POO y Algoritmos",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 2681445,
       "modifiedTime": "2026-11-25T16:26:38Z",
@@ -580,6 +723,11 @@
       "subjectName": "Programación II",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "POO y Algoritmos",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 15034376,
       "modifiedTime": "2026-11-25T16:21:40Z",
@@ -597,6 +745,11 @@
       "subjectName": "Programación II",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "POO y Algoritmos",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 1880836,
       "modifiedTime": "2026-11-25T16:08:36Z",
@@ -614,6 +767,11 @@
       "subjectName": "Programación II",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "POO y Algoritmos",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 9322421,
       "modifiedTime": "2026-11-25T16:04:03Z",
@@ -631,6 +789,11 @@
       "subjectName": "Programación II",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Programación",
+        "Ingeniería de Software"
+      ],
       "format": "PDF",
       "sizeBytes": 49499540,
       "modifiedTime": "2026-11-25T15:53:26Z",
@@ -648,6 +811,11 @@
       "subjectName": "Programación II",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Python",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 1028888,
       "modifiedTime": "2026-11-25T15:24:59Z",
@@ -665,6 +833,10 @@
       "subjectName": "Sistemas Operativos",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Sistemas Operativos"
+      ],
       "format": "PDF",
       "sizeBytes": 6256690,
       "modifiedTime": "2026-11-25T16:31:42Z",
@@ -682,6 +854,10 @@
       "subjectName": "Sistemas Operativos",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Sistemas Operativos"
+      ],
       "format": "PDF",
       "sizeBytes": 16425841,
       "modifiedTime": "2026-11-25T16:31:41Z",
@@ -699,6 +875,10 @@
       "subjectName": "Sistemas Operativos",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Sistemas Operativos"
+      ],
       "format": "PDF",
       "sizeBytes": 6638210,
       "modifiedTime": "2026-11-25T16:31:41Z",
@@ -716,6 +896,10 @@
       "subjectName": "Sistemas Operativos",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Sistemas Operativos"
+      ],
       "format": "PDF",
       "sizeBytes": 61468679,
       "modifiedTime": "2026-11-25T16:31:41Z",
@@ -733,6 +917,10 @@
       "subjectName": "Sistemas Operativos",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Sistemas Operativos"
+      ],
       "format": "PDF",
       "sizeBytes": 83312893,
       "modifiedTime": "2026-11-25T16:31:41Z",
@@ -750,6 +938,10 @@
       "subjectName": "Base de Datos",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Bases de Datos"
+      ],
       "format": "PDF",
       "sizeBytes": 7939218,
       "modifiedTime": "2026-11-25T16:37:37Z",
@@ -767,6 +959,11 @@
       "subjectName": "Introducción al Desarrollo Web",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Desarrollo Web",
+        "Frontend y CSS"
+      ],
       "format": "PDF",
       "sizeBytes": 77078837,
       "modifiedTime": "2026-11-25T15:12:57Z",
@@ -784,6 +981,11 @@
       "subjectName": "Introducción al Desarrollo Web",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Desarrollo Web",
+        "Frontend y CSS"
+      ],
       "format": "PDF",
       "sizeBytes": 7849445,
       "modifiedTime": "2026-11-25T15:11:22Z",
@@ -801,6 +1003,11 @@
       "subjectName": "Introducción al Desarrollo Web",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Desarrollo Web",
+        "Frontend y CSS"
+      ],
       "format": "PDF",
       "sizeBytes": 136356,
       "modifiedTime": "2026-11-25T15:03:44Z",
@@ -818,6 +1025,11 @@
       "subjectName": "Introducción al Desarrollo Web",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Desarrollo Web",
+        "Frontend y CSS"
+      ],
       "format": "PDF",
       "sizeBytes": 13159432,
       "modifiedTime": "2026-11-25T14:30:28Z",
@@ -835,6 +1047,11 @@
       "subjectName": "Introducción al Desarrollo Web",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Desarrollo Web",
+        "Frontend y CSS"
+      ],
       "format": "PDF",
       "sizeBytes": 7540041,
       "modifiedTime": "2026-11-25T14:18:09Z",
@@ -852,6 +1069,13 @@
       "subjectName": "Introducción al Desarrollo Web",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "JavaScript",
+        "Desarrollo Web",
+        "Frontend y CSS",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 9391205,
       "modifiedTime": "2026-11-25T14:10:12Z",
@@ -869,6 +1093,11 @@
       "subjectName": "Introducción al Desarrollo Web",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Desarrollo Web",
+        "Frontend y CSS"
+      ],
       "format": "PDF",
       "sizeBytes": 5313765,
       "modifiedTime": "2026-11-25T13:55:32Z",
@@ -886,6 +1115,12 @@
       "subjectName": "Introducción al Desarrollo Web",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Desarrollo Web",
+        "Frontend y CSS",
+        "Móviles y Multimedia"
+      ],
       "format": "PDF",
       "sizeBytes": 1008309,
       "modifiedTime": "2026-11-25T13:34:14Z",
@@ -903,6 +1138,10 @@
       "subjectName": "Introducción al Desarrollo Web",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Desarrollo Web"
+      ],
       "format": "PDF",
       "sizeBytes": 8756680,
       "modifiedTime": "2026-11-25T13:24:12Z",
@@ -920,6 +1159,12 @@
       "subjectName": "Introducción al Desarrollo Web",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "JavaScript",
+        "Desarrollo Web",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 2095488,
       "modifiedTime": "2026-11-25T12:46:13Z",
@@ -937,6 +1182,12 @@
       "subjectName": "Introducción al Desarrollo Web",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "JavaScript",
+        "Desarrollo Web",
+        "Programación"
+      ],
       "format": "PDF",
       "sizeBytes": 6776796,
       "modifiedTime": "2026-11-25T12:43:01Z",
@@ -954,6 +1205,10 @@
       "subjectName": "Introducción al Desarrollo Web",
       "year": "1er Año",
       "semester": "2do Cuatrimestre",
+      "isExtra": false,
+      "topics": [
+        "Desarrollo Web"
+      ],
       "format": "PDF",
       "sizeBytes": 37366299,
       "modifiedTime": "2026-11-25T12:35:19Z",
@@ -961,6 +1216,27 @@
       "previewUrl": "https://drive.google.com/file/d/1xSvM3LUpvP8t0WTGY27VR6hX9wdmW7rU/preview",
       "downloadUrl": "https://drive.google.com/uc?export=download&id=1xSvM3LUpvP8t0WTGY27VR6hX9wdmW7rU",
       "thumbnailUrl": "https://drive.google.com/thumbnail?id=1xSvM3LUpvP8t0WTGY27VR6hX9wdmW7rU&sz=w600"
+    },
+    {
+      "id": "1Uxquj_TxPs8QdwQd0YKaqvcYC0GlNfwW",
+      "title": "Diseño de base de datos. Fundamentos teóricos y prácticos",
+      "author": "Flores, Guacho",
+      "subjectCode": "VAR",
+      "subject": "Varios · Lecturas recomendadas",
+      "subjectName": "Varios",
+      "year": "Varios",
+      "semester": "Lecturas recomendadas",
+      "isExtra": true,
+      "topics": [
+        "Bases de Datos"
+      ],
+      "format": "PDF",
+      "sizeBytes": 10308372,
+      "modifiedTime": "2026-11-26T09:38:17Z",
+      "viewUrl": "https://drive.google.com/file/d/1Uxquj_TxPs8QdwQd0YKaqvcYC0GlNfwW/view",
+      "previewUrl": "https://drive.google.com/file/d/1Uxquj_TxPs8QdwQd0YKaqvcYC0GlNfwW/preview",
+      "downloadUrl": "https://drive.google.com/uc?export=download&id=1Uxquj_TxPs8QdwQd0YKaqvcYC0GlNfwW",
+      "thumbnailUrl": "https://drive.google.com/thumbnail?id=1Uxquj_TxPs8QdwQd0YKaqvcYC0GlNfwW&sz=w600"
     }
   ]
 }

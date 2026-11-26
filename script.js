@@ -11,10 +11,28 @@
     EXCLUDED_SUBJECTS: ["seguridad informática", "seguridad informatica"]
   };
 
+  const TOPIC_RULES = [
+  { topic: "Bases de Datos", re: /\b(base de datos|bases de datos|sql|mysql|postgres|postgresql|mongodb|nosql|relacional|database|databases)\b/ },
+  { topic: "Redes", re: /\b(red|redes|comunicaciones|networking|network|tcp|http|protocolos|teleprocesamiento)\b/ },
+  { topic: "Seguridad", re: /\b(seguridad|ciberseguridad|security|hacking|pentest|pentesting|criptografia|cryptography|owasp|vulnerabilidad|malware|forense|defensa)\b/ },
+  { topic: "Sistemas Operativos", re: /\b(sistema operativo|sistemas operativos|operating system|linux|unix|kernel|bash|shell)\b/ },
+  { topic: "Arquitectura", re: /\b(arquitectura de computad|organizacion y arquitectura|hardware|microprocesador|ensamblador|cpu)\b/ },
+  { topic: "Python", re: /\b(python)\b/ },
+  { topic: "JavaScript", re: /\b(javascript|typescript|react|node\.?js|ecmascript)\b/ },
+  { topic: "Desarrollo Web", re: /\b(desarrollo web|aplicaciones web|web development|web design|html|html5|css|bootstrap|react|javascript|responsive|frontend|backend|sitios web)\b/ },
+  { topic: "Frontend y CSS", re: /\b(css|html|html5|bootstrap|responsive|react|frontend|maquetacion|tailwind)\b/ },
+  { topic: "POO y Algoritmos", re: /\b(orientada a objetos|object-oriented|poo|algoritmos|estructura de datos|estructuras de datos|patrones de diseno|design patterns)\b/ },
+  { topic: "Programación", re: /\b(programacion|programador|programming|python|pascal|delphi|javascript|react|algoritmos|codigo|code|poo|object-oriented)\b/ },
+  { topic: "Ingeniería de Software", re: /\b(ingenieria de software|software engineering|requisitos|uml|testing|pruebas|agile|scrum|clean code|arquitectura de software)\b/ },
+  { topic: "Diseño y UX/UI", re: /\b(diseno grafico|ux|ui|usabilidad|tipografia|color|marca|logo|reticula|reticulas|interfaz|interfaces|figma|branding)\b/ },
+  { topic: "Móviles y Multimedia", re: /\b(movil|moviles|mobile|android|ios|react native|expo|multimedia|videojuegos|juegos|canvas|animacion)\b/ },
+  { topic: "Fundamentos", re: /\b(introduccion a la informatica|introduccion a la computacion|fundamentos de informatica|ciencias de la computacion)\b/ }
+];
+
   const STORAGE_KEYS = {
     FAVORITES: "biblioteca_uner_favs_v2",
     THEME: "biblioteca_uner_theme_v2",
-    CATALOG_CACHE: "biblioteca_uner_live_cache_v2"
+    CATALOG_CACHE: "biblioteca_uner_live_cache_v3"
   };
 
   const state = {
@@ -23,6 +41,7 @@
     year: "all",
     semester: "all",
     subject: "all",
+    selectedTopics: new Set(),
     sortBy: "plan",
     viewMode: "grid",
     onlyFavorites: false,
@@ -31,8 +50,8 @@
     favorites: new Set(),
     selectedBookId: null,
     showPdfPreview: false,
-    syncStatus: "local", // 'live' | 'syncing' | 'local' | 'error'
-    syncMessage: "Catálogo local sincronizado"
+    syncStatus: "local",
+    syncMessage: "Catálogo Drive"
   };
 
   function safeStorageGet(key) {
@@ -54,6 +73,16 @@
   function isExcludedSubject(name) {
     const norm = normalizeText(name);
     return (CFG.EXCLUDED_SUBJECTS || []).some((ex) => norm.includes(normalizeText(ex)));
+  }
+
+  function inferTopicsClient(book) {
+    if (Array.isArray(book.topics) && book.topics.length > 0) return book.topics;
+    const topics = [];
+    const norm = normalizeText(`${book.title} ${book.isExtra ? "" : (book.subjectName || "")}`);
+    TOPIC_RULES.forEach((rule) => {
+      if (rule.re.test(norm) && !topics.includes(rule.topic)) topics.push(rule.topic);
+    });
+    return topics.length ? topics : ["General"];
   }
 
   function escapeHtml(str) {
@@ -84,13 +113,37 @@
 
   function sanitizeCatalog(raw) {
     if (!raw || !Array.isArray(raw.books)) return null;
-    const subjects = (raw.subjects || []).filter((s) => !isExcludedSubject(s.name || s.fullName));
-    const allowedCodes = new Set(subjects.map((s) => s.code));
-    const books = raw.books.filter((b) => {
-      if (isExcludedSubject(b.subject || b.subjectName)) return false;
-      if (allowedCodes.size > 0 && b.subjectCode && !allowedCodes.has(b.subjectCode)) return false;
-      return true;
+    const subjects = (raw.subjects || [])
+      .filter((s) => !isExcludedSubject(s.name || s.fullName))
+      .map((s) => ({
+        ...s,
+        isExtra: Boolean(s.isExtra || normalizeText(s.name) === "varios")
+      }));
+
+    // Keep regular curriculum subjects first, extra folders ("Varios") at the bottom
+    subjects.sort((a, b) => {
+      if (a.isExtra !== b.isExtra) return a.isExtra ? 1 : -1;
+      return String(a.code || "").localeCompare(String(b.code || ""), "es", { numeric: true });
     });
+
+    const allowedCodes = new Set(subjects.map((s) => s.code));
+    const extraCodes = new Set(subjects.filter((s) => s.isExtra).map((s) => s.code));
+
+    const books = raw.books
+      .filter((b) => {
+        if (isExcludedSubject(b.subject || b.subjectName)) return false;
+        if (allowedCodes.size > 0 && b.subjectCode && !allowedCodes.has(b.subjectCode)) return false;
+        return true;
+      })
+      .map((b) => {
+        const isExtra = Boolean(b.isExtra || extraCodes.has(b.subjectCode));
+        return {
+          ...b,
+          isExtra,
+          topics: inferTopicsClient({ ...b, isExtra })
+        };
+      });
+
     return {
       generatedAt: raw.generatedAt || new Date().toISOString(),
       source: raw.source || "Google Drive",
@@ -105,7 +158,7 @@
     const host = document.getElementById("toastContainer");
     if (!host) return;
     const el = document.createElement("div");
-    el.className = "toast-enter surface-card px-4 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 border border-teal-500/40";
+    el.className = "toast-enter surface-card px-4 py-2.5 rounded-xl text-xs sm:text-sm font-medium flex items-center gap-2 border border-teal-500/40";
     el.innerHTML = `<span class="w-2 h-2 rounded-full bg-teal-400 shrink-0"></span><span>${escapeHtml(message)}</span>`;
     host.appendChild(el);
     setTimeout(() => {
@@ -178,12 +231,23 @@
     if (state.selectedBookId === bookId) renderModalContent();
   }
 
+  function toggleTopic(topic) {
+    if (!topic) return;
+    if (topic === "__ALL__") {
+      state.selectedTopics.clear();
+    } else if (state.selectedTopics.has(topic)) {
+      state.selectedTopics.delete(topic);
+    } else {
+      state.selectedTopics.add(topic);
+    }
+    renderAll();
+  }
+
   async function loadInitialCatalog() {
-    // 1) Instant render from embedded snapshot (Canvas preview) or local books.json
     if (window.__INITIAL_CATALOG__) {
       state.catalog = sanitizeCatalog(window.__INITIAL_CATALOG__);
       state.syncStatus = "local";
-      state.syncMessage = "Catálogo Drive (48 libros cargados)";
+      state.syncMessage = `Catálogo Drive (${state.catalog.books.length} libros)`;
       populateFilterOptions();
       renderAll();
     } else {
@@ -193,16 +257,13 @@
           const data = await res.json();
           state.catalog = sanitizeCatalog(data);
           state.syncStatus = "local";
-          state.syncMessage = "Catálogo base cargado";
+          state.syncMessage = `Catálogo base (${state.catalog.books.length} libros)`;
           populateFilterOptions();
           renderAll();
         }
-      } catch (_) {
-        // Fallback handled below
-      }
+      } catch (_) { /* ignore */ }
     }
 
-    // 2) Check cached live Drive response
     const cachedRaw = safeStorageGet(STORAGE_KEYS.CATALOG_CACHE);
     if (cachedRaw) {
       try {
@@ -213,16 +274,15 @@
           if (clean && clean.books.length > 0) {
             state.catalog = clean;
             state.syncStatus = "live";
-            state.syncMessage = "Sincronizado con Google Drive";
+            state.syncMessage = "Sincronizado con Drive";
             populateFilterOptions();
             renderAll();
             return;
           }
         }
-      } catch (_) { /* ignore invalid cache */ }
+      } catch (_) { /* ignore */ }
     }
 
-    // 3) Attempt live sync in background if configured
     if (CFG.APPS_SCRIPT_URL || (CFG.USE_NETLIFY_FUNCTION && !window.__INITIAL_CATALOG__)) {
       await syncWithDrive(false);
     }
@@ -235,7 +295,7 @@
 
     if (!endpoint) {
       if (forceRefresh) {
-        showToast("Activa Apps Script en config.js para sincronizar cambios en vivo");
+        showToast("Pega tu URL /exec de Apps Script en config.js para sincronizar en vivo");
         openSyncModal();
       }
       return;
@@ -274,34 +334,28 @@
     if (!dot || !label) return;
 
     dot.className = "w-2 h-2 rounded-full shrink-0";
-    if (state.syncStatus === "live") {
-      dot.classList.add("bg-emerald-400");
-    } else if (state.syncStatus === "syncing") {
-      dot.classList.add("bg-amber-400");
-    } else if (state.syncStatus === "error") {
-      dot.classList.add("bg-rose-400");
-    } else {
-      dot.classList.add("bg-teal-400");
-    }
+    if (state.syncStatus === "live") dot.classList.add("bg-emerald-400");
+    else if (state.syncStatus === "syncing") dot.classList.add("bg-amber-400");
+    else if (state.syncStatus === "error") dot.classList.add("bg-rose-400");
+    else dot.classList.add("bg-teal-400");
+
     label.textContent = state.syncMessage;
-    if (icon) {
-      icon.classList.toggle("spin-slow", state.syncStatus === "syncing");
-    }
+    if (icon) icon.classList.toggle("spin-slow", state.syncStatus === "syncing");
   }
 
   function populateFilterOptions() {
     if (!state.catalog) return;
     const subjects = state.catalog.subjects || [];
     const years = Array.from(new Set(subjects.map((s) => s.year)));
-    const semesters = Array.from(new Set(subjects.map((s) => s.semester)));
+    const semesters = Array.from(new Set(subjects.filter((s) => !s.isExtra).map((s) => s.semester)));
 
     const yearSelect = document.getElementById("yearSelect");
     const semSelect = document.getElementById("semesterSelect");
     const subjSelect = document.getElementById("subjectSelect");
 
     if (yearSelect) {
-      yearSelect.innerHTML = `<option value="all">Todos los años</option>` +
-        years.map((y) => `<option value="${escapeHtml(y)}">${escapeHtml(y)}</option>`).join("");
+      yearSelect.innerHTML = `<option value="all">Todos los años / secciones</option>` +
+        years.map((y) => `<option value="${escapeHtml(y)}">${escapeHtml(y === "Varios" ? "Varios (Recomendados)" : y)}</option>`).join("");
       yearSelect.value = state.year;
     }
 
@@ -314,7 +368,8 @@
     if (subjSelect) {
       const filteredSubjects = subjects.filter((s) => {
         if (state.year !== "all" && s.year !== state.year) return false;
-        if (state.semester !== "all" && s.semester !== state.semester) return false;
+        if (state.semester !== "all" && !s.isExtra && s.semester !== state.semester) return false;
+        if (state.semester !== "all" && s.isExtra) return false;
         return true;
       });
       if (state.subject !== "all" && !filteredSubjects.some((s) => s.code === state.subject)) {
@@ -334,8 +389,15 @@
       if (state.semester !== "all" && b.semester !== state.semester) return false;
       if (state.subject !== "all" && b.subjectCode !== state.subject) return false;
       if (state.onlyFavorites && !state.favorites.has(b.id)) return false;
+      if (state.selectedTopics.size > 0) {
+        const bookTopics = b.topics || [];
+        // Match books that contain ALL selected topics (AND refinement)
+        for (const t of state.selectedTopics) {
+          if (!bookTopics.includes(t)) return false;
+        }
+      }
       if (q) {
-        const hay = normalizeText(`${b.title} ${b.author} ${b.subject} ${b.year} ${b.semester}`);
+        const hay = normalizeText(`${b.title} ${b.author} ${b.subject} ${b.year} ${b.semester} ${(b.topics || []).join(" ")}`);
         if (!hay.includes(q)) return false;
       }
       return true;
@@ -349,7 +411,8 @@
       list = [...list].sort((a, b) => new Date(b.modifiedTime) - new Date(a.modifiedTime));
     } else {
       list = [...list].sort((a, b) => {
-        const c = a.subjectCode.localeCompare(b.subjectCode, "es", { numeric: true });
+        if (a.isExtra !== b.isExtra) return a.isExtra ? 1 : -1;
+        const c = String(a.subjectCode).localeCompare(String(b.subjectCode), "es", { numeric: true });
         return c !== 0 ? c : a.title.localeCompare(b.title, "es");
       });
     }
@@ -359,8 +422,8 @@
   function renderStats(filteredBooks) {
     if (!state.catalog) return;
     const totalBooks = state.catalog.books.length;
-    const totalSubjects = state.catalog.subjects.length;
-    const populatedSubjects = new Set(state.catalog.books.map((b) => b.subjectCode)).size;
+    const curriculumSubjects = state.catalog.subjects.filter((s) => !s.isExtra);
+    const populatedCurriculum = new Set(state.catalog.books.filter((b) => !b.isExtra).map((b) => b.subjectCode)).size;
 
     const elTotalBooks = document.getElementById("statTotalBooks");
     const elSubjects = document.getElementById("statSubjects");
@@ -369,15 +432,20 @@
     const elResults = document.getElementById("resultsSummary");
 
     if (elTotalBooks) elTotalBooks.textContent = String(totalBooks);
-    if (elSubjects) elSubjects.textContent = `${populatedSubjects}/${totalSubjects}`;
+    if (elSubjects) elSubjects.textContent = `${populatedCurriculum}/${curriculumSubjects.length}`;
     if (elUpdated) elUpdated.textContent = formatDate(state.catalog.generatedAt);
     if (elFavCount) elFavCount.textContent = String(state.favorites.size);
 
+    const hasActiveFilters = Boolean(
+      state.query || state.year !== "all" || state.semester !== "all" ||
+      state.subject !== "all" || state.onlyFavorites || state.selectedTopics.size > 0
+    );
+
     if (elResults) {
-      const hasActiveFilters = state.query || state.year !== "all" || state.semester !== "all" || state.subject !== "all" || state.onlyFavorites;
+      const topicInfo = state.selectedTopics.size > 0 ? ` · Temas: ${Array.from(state.selectedTopics).join(" + ")}` : "";
       elResults.textContent = hasActiveFilters
-        ? `Mostrando ${filteredBooks.length} de ${totalBooks} libros`
-        : `${totalBooks} libros disponibles en ${populatedSubjects} materias activas (${totalSubjects} materias en el plan)`;
+        ? `Mostrando ${filteredBooks.length} de ${totalBooks} libros${topicInfo}`
+        : `${totalBooks} libros disponibles (${populatedCurriculum}/${curriculumSubjects.length} materias + Varios)`;
     }
 
     const favBtn = document.getElementById("favFilterBtn");
@@ -388,9 +456,8 @@
 
     const clearBtn = document.getElementById("clearFiltersBtn");
     if (clearBtn) {
-      const dirty = Boolean(state.query || state.year !== "all" || state.semester !== "all" || state.subject !== "all" || state.onlyFavorites);
-      clearBtn.classList.toggle("opacity-50", !dirty);
-      clearBtn.disabled = !dirty;
+      clearBtn.classList.toggle("opacity-50", !hasActiveFilters);
+      clearBtn.disabled = !hasActiveFilters;
     }
   }
 
@@ -412,8 +479,9 @@
     const allPill = `<button type="button" data-pill-subject="all" class="subject-pill ${state.subject === "all" ? "active" : ""} px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap">Todas</button>`;
     const pills = subjects.map((s) => {
       const c = counts[s.code] || 0;
+      const prefix = s.isExtra ? "★" : escapeHtml(s.code);
       return `<button type="button" data-pill-subject="${escapeHtml(s.code)}" class="subject-pill ${state.subject === s.code ? "active" : ""} px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap flex items-center gap-1.5">
-        <span class="font-mono opacity-75">${escapeHtml(s.code)}</span>
+        <span class="opacity-80">${prefix}</span>
         <span>${escapeHtml(s.name)}</span>
         <span class="px-1.5 py-0.5 rounded-full text-[10px] ${c > 0 ? "bg-teal-500/15 text-teal-400" : "bg-slate-500/15 opacity-70"}">${c}</span>
       </button>`;
@@ -422,23 +490,50 @@
     container.innerHTML = allPill + pills;
   }
 
+  function renderTopicPills() {
+    const container = document.getElementById("topicPills");
+    if (!container || !state.catalog) return;
+
+    const counts = {};
+    state.catalog.books.forEach((b) => {
+      (b.topics || []).forEach((t) => {
+        counts[t] = (counts[t] || 0) + 1;
+      });
+    });
+
+    const sortedTopics = Object.keys(counts).sort((a, b) => counts[b] - counts[a] || a.localeCompare(b, "es"));
+    const allActive = state.selectedTopics.size === 0;
+
+    const allBtn = `<button type="button" data-topic-filter="__ALL__" class="topic-pill ${allActive ? "active" : ""} px-2.5 py-1 rounded-lg text-[11px] font-medium whitespace-nowrap">Todos los temas</button>`;
+    const pills = sortedTopics.map((t) => {
+      const active = state.selectedTopics.has(t);
+      return `<button type="button" data-topic-filter="${escapeHtml(t)}" class="topic-pill ${active ? "active" : ""} px-2.5 py-1 rounded-lg text-[11px] font-medium whitespace-nowrap inline-flex items-center gap-1.5">
+        <span>#${escapeHtml(t)}</span>
+        <span class="opacity-70 text-[10px]">${counts[t]}</span>
+      </button>`;
+    }).join("");
+
+    container.innerHTML = allBtn + pills;
+  }
+
   function buildCoverMarkup(book, accent) {
     const color = accent || "#14b8a6";
+    const badgeText = book.isExtra ? "VAR" : book.subjectCode;
     return `
       <div class="cover-shell" style="background: linear-gradient(155deg, ${color}2e 0%, #0b1c2e 55%, #06101b 100%);">
         <div class="cover-spine"></div>
         <div class="absolute inset-0 p-4 pl-5 flex flex-col justify-between z-[1] select-none">
           <div class="flex items-center gap-1.5 pr-10">
-            <span class="font-mono text-[11px] font-semibold px-2 py-0.5 rounded-md bg-black/35 text-teal-300 border border-white/10">${escapeHtml(book.subjectCode)}</span>
-            <span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-black/35 text-slate-300">${escapeHtml(book.format || "PDF")}</span>
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-black/35 text-teal-300 border border-white/10">${escapeHtml(badgeText)}</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-black/35 text-slate-300">${escapeHtml(book.format || "PDF")}</span>
           </div>
           <div>
-            <p class="text-white font-bold text-sm leading-snug line-clamp-3 drop-shadow-sm">${escapeHtml(book.title)}</p>
-            <p class="text-slate-300/90 text-xs mt-1.5 line-clamp-2">${escapeHtml(book.author)}</p>
+            <p class="text-white font-bold text-xs sm:text-sm leading-snug line-clamp-3 drop-shadow-sm">${escapeHtml(book.title)}</p>
+            <p class="text-slate-300/90 text-[11px] mt-1.5 line-clamp-2">${escapeHtml(book.author)}</p>
           </div>
           <div class="pt-2 border-t border-white/10 flex items-center justify-between text-[10px] text-slate-300/80">
-            <span class="truncate max-w-[70%]">${escapeHtml(book.subjectName)}</span>
-            <span class="font-mono">${escapeHtml(formatBytes(book.sizeBytes))}</span>
+            <span class="truncate max-w-[68%]">${escapeHtml(book.subjectName)}</span>
+            <span>${escapeHtml(formatBytes(book.sizeBytes))}</span>
           </div>
         </div>
         <img
@@ -454,21 +549,32 @@
     `;
   }
 
+  function renderBookTopicsHtml(topics, limit) {
+    const list = (topics || []).slice(0, limit || 3);
+    const extra = (topics || []).length - list.length;
+    const chips = list.map((t) =>
+      `<button type="button" data-topic-filter="${escapeHtml(t)}" data-stop-prop="1" class="topic-chip px-1.5 py-0.5 rounded text-[10px] leading-tight truncate max-w-full">#${escapeHtml(t)}</button>`
+    ).join("");
+    const more = extra > 0 ? `<span class="text-[10px] text-[var(--text-muted)]">+${extra}</span>` : "";
+    return `<div class="flex flex-wrap items-center gap-1">${chips}${more}</div>`;
+  }
+
   function renderBookCard(book, accent) {
     const isFav = state.favorites.has(book.id);
     if (state.viewMode === "list") {
       return `
-        <article class="book-card rounded-xl p-3.5 flex items-center justify-between gap-4 cursor-pointer" data-open-book="${escapeHtml(book.id)}">
-          <div class="flex items-center gap-3.5 min-w-0">
-            <div class="w-10 h-12 rounded-lg shrink-0 flex items-center justify-center font-mono text-xs font-bold text-white" style="background: linear-gradient(145deg, ${accent}, #0f2942);">
+        <article class="book-card rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 cursor-pointer" data-open-book="${escapeHtml(book.id)}">
+          <div class="flex items-start sm:items-center gap-3.5 min-w-0">
+            <div class="w-10 h-12 rounded-lg shrink-0 flex items-center justify-center text-[11px] font-bold text-white" style="background: linear-gradient(145deg, ${accent}, #0f2942);">
               ${escapeHtml(book.format || "PDF")}
             </div>
-            <div class="min-w-0">
-              <h4 class="font-semibold text-sm sm:text-base truncate">${escapeHtml(book.title)}</h4>
-              <p class="text-xs sm:text-sm text-[var(--text-secondary)] truncate">${escapeHtml(book.author)} · <span class="font-mono text-xs">${escapeHtml(formatBytes(book.sizeBytes))}</span></p>
+            <div class="min-w-0 space-y-1">
+              <h4 class="font-semibold text-xs sm:text-sm truncate">${escapeHtml(book.title)}</h4>
+              <p class="text-[11px] sm:text-xs text-[var(--text-secondary)] truncate">${escapeHtml(book.author)} · ${escapeHtml(formatBytes(book.sizeBytes))}</p>
+              ${renderBookTopicsHtml(book.topics, 4)}
             </div>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center gap-2 shrink-0 self-end sm:self-center">
             <button type="button" data-fav-book="${escapeHtml(book.id)}" title="${isFav ? "Quitar de favoritos" : "Guardar en favoritos"}" class="p-2 rounded-lg surface-soft hover:border-teal-400 transition">
               <i data-lucide="bookmark" class="w-4 h-4 ${isFav ? "fill-teal-400 text-teal-400" : "text-[var(--text-secondary)]"}"></i>
             </button>
@@ -481,7 +587,7 @@
     }
 
     return `
-      <article class="book-card rounded-2xl p-3 flex flex-col justify-between gap-3 cursor-pointer group" data-open-book="${escapeHtml(book.id)}">
+      <article class="book-card rounded-2xl p-3 flex flex-col justify-between gap-2.5 cursor-pointer group" data-open-book="${escapeHtml(book.id)}">
         <div>
           <div class="relative">
             ${buildCoverMarkup(book, accent)}
@@ -494,15 +600,16 @@
               <i data-lucide="bookmark" class="w-4 h-4 ${isFav ? "fill-teal-400 text-teal-400" : "text-slate-200"}"></i>
             </button>
           </div>
-          <div class="mt-3 px-0.5">
-            <h4 class="font-semibold text-sm leading-snug line-clamp-2 group-hover:text-teal-400 transition-colors">${escapeHtml(book.title)}</h4>
-            <p class="text-xs text-[var(--text-secondary)] mt-1 truncate">${escapeHtml(book.author)}</p>
+          <div class="mt-3 px-0.5 space-y-1.5">
+            <h4 class="font-semibold text-xs sm:text-[13px] leading-snug line-clamp-2 group-hover:text-teal-400 transition-colors">${escapeHtml(book.title)}</h4>
+            <p class="text-[11px] text-[var(--text-secondary)] truncate">${escapeHtml(book.author)}</p>
+            ${renderBookTopicsHtml(book.topics, 2)}
           </div>
         </div>
-        <div class="px-0.5 pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between gap-2 text-xs">
-          <span class="font-mono text-[11px] text-[var(--text-muted)]">${escapeHtml(formatBytes(book.sizeBytes))}</span>
+        <div class="px-0.5 pt-2 border-t border-[var(--border-subtle)] flex items-center justify-between gap-2 text-[11px]">
+          <span class="text-[var(--text-muted)]">${escapeHtml(formatBytes(book.sizeBytes))}</span>
           <span class="text-teal-400 font-medium inline-flex items-center gap-1">
-            Ver detalle
+            Detalle
             <i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i>
           </span>
         </div>
@@ -514,9 +621,8 @@
     const main = document.getElementById("catalogContent");
     if (!main || !state.catalog) return;
 
-    const hasSearchOrFav = Boolean(state.query || state.onlyFavorites);
+    const hasActiveNarrowing = Boolean(state.query || state.onlyFavorites || state.selectedTopics.size > 0);
 
-    // If sorting by title/author/recent or searching, show unified grid/list or grouped by subject
     if (state.sortBy !== "plan") {
       if (filteredBooks.length === 0) {
         main.innerHTML = renderEmptySearch();
@@ -538,7 +644,6 @@
       return;
     }
 
-    // Group by Year -> Semester -> Subject
     const booksBySubject = {};
     filteredBooks.forEach((b) => {
       if (!booksBySubject[b.subjectCode]) booksBySubject[b.subjectCode] = [];
@@ -550,7 +655,7 @@
       if (state.semester !== "all" && s.semester !== state.semester) return false;
       if (state.subject !== "all" && s.code !== state.subject) return false;
       const count = (booksBySubject[s.code] || []).length;
-      if ((state.hideEmptySubjects || hasSearchOrFav) && count === 0) return false;
+      if ((state.hideEmptySubjects || hasActiveNarrowing) && count === 0) return false;
       return true;
     });
 
@@ -560,8 +665,11 @@
       return;
     }
 
+    const curriculumSubjects = visibleSubjects.filter((s) => !s.isExtra);
+    const extraSubjects = visibleSubjects.filter((s) => s.isExtra);
+
     const grouped = new Map();
-    visibleSubjects.forEach((s) => {
+    curriculumSubjects.forEach((s) => {
       if (!grouped.has(s.year)) grouped.set(s.year, new Map());
       const semMap = grouped.get(s.year);
       if (!semMap.has(s.semester)) semMap.set(s.semester, []);
@@ -606,8 +714,8 @@
             <div class="space-y-3.5">
               <div class="flex flex-wrap items-center justify-between gap-2">
                 <div class="flex items-center gap-2.5">
-                  <span class="font-mono text-xs font-bold px-2.5 py-1 rounded-lg text-white" style="background-color: ${escapeHtml(subj.accent)};">${escapeHtml(subj.code)}</span>
-                  <h3 class="text-base sm:text-lg font-bold">${escapeHtml(subj.name)}</h3>
+                  <span class="text-xs font-bold px-2.5 py-1 rounded-lg text-white" style="background-color: ${escapeHtml(subj.accent)};">${escapeHtml(subj.code)}</span>
+                  <h3 class="text-sm sm:text-base font-bold">${escapeHtml(subj.name)}</h3>
                   <span class="text-xs px-2 py-0.5 rounded-full surface-soft text-[var(--text-secondary)]">${list.length}</span>
                 </div>
                 <a href="${escapeHtml(subj.folderUrl)}" target="_blank" rel="noopener noreferrer" class="text-xs font-medium text-[var(--text-secondary)] hover:text-teal-400 inline-flex items-center gap-1.5 transition">
@@ -618,7 +726,7 @@
               ${
                 list.length > 0
                   ? `<div class="${gridClass}">${list.map((b) => renderBookCard(b, subj.accent)).join("")}</div>`
-                  : `<div class="surface-soft rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 text-xs sm:text-sm text-[var(--text-secondary)]">
+                  : `<div class="surface-soft rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--text-secondary)]">
                       <div class="flex items-center gap-2.5">
                         <i data-lucide="cloud-upload" class="w-4 h-4 text-teal-400 shrink-0"></i>
                         <span>Carpeta lista para sincronización automática — los libros que subas a Drive aparecerán aquí.</span>
@@ -636,6 +744,43 @@
       html += `</section>`;
     });
 
+    // Render "Varios" (and any extra top-level folders) BELOW all subjects
+    extraSubjects.forEach((subj) => {
+      const list = booksBySubject[subj.code] || [];
+      const gridClass = state.viewMode === "grid"
+        ? "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-5"
+        : "flex flex-col gap-2.5";
+
+      html += `
+        <section class="space-y-5 pt-4">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border-subtle)] pb-3">
+            <div class="flex items-center gap-3">
+              <span class="w-2.5 h-8 rounded-full bg-gradient-to-b from-amber-400 to-orange-500"></span>
+              <div>
+                <h2 class="font-display text-sm sm:text-base leading-relaxed">${escapeHtml(subj.name)}</h2>
+                <p class="text-xs text-[var(--text-secondary)]">Lecturas recomendadas por docentes y compañeros · ${list.length} ${list.length === 1 ? "libro" : "libros"}</p>
+              </div>
+            </div>
+            <a href="${escapeHtml(subj.folderUrl)}" target="_blank" rel="noopener noreferrer" class="text-xs font-medium text-[var(--text-secondary)] hover:text-amber-400 inline-flex items-center gap-1.5 transition">
+              <i data-lucide="folder-open" class="w-3.5 h-3.5"></i>
+              <span>Carpeta Varios en Drive</span>
+            </a>
+          </div>
+          ${
+            list.length > 0
+              ? `<div class="${gridClass}">${list.map((b) => renderBookCard(b, subj.accent)).join("")}</div>`
+              : `<div class="surface-soft rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 text-xs text-[var(--text-secondary)]">
+                  <div class="flex items-center gap-2.5">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-amber-400 shrink-0"></i>
+                    <span>Carpeta lista para lecturas recomendadas fuera de la currícula.</span>
+                  </div>
+                  <a href="${escapeHtml(subj.folderUrl)}" target="_blank" rel="noopener noreferrer" class="text-amber-400 font-medium hover:underline">Abrir carpeta</a>
+                </div>`
+          }
+        </section>
+      `;
+    });
+
     main.innerHTML = html;
     refreshIcons();
   }
@@ -646,9 +791,9 @@
         <div class="w-12 h-12 rounded-2xl bg-teal-500/15 text-teal-400 flex items-center justify-center mx-auto">
           <i data-lucide="book-x" class="w-6 h-6"></i>
         </div>
-        <h3 class="text-lg font-bold">No se encontraron libros</h3>
-        <p class="text-sm text-[var(--text-secondary)]">Prueba ajustando el término de búsqueda o quitando alguno de los filtros activos.</p>
-        <button type="button" id="emptyResetBtn" class="mt-2 px-4 py-2 rounded-xl bg-teal-500 text-slate-950 font-semibold text-sm hover:bg-teal-400 transition">
+        <h3 class="text-base font-bold">No se encontraron libros</h3>
+        <p class="text-xs sm:text-sm text-[var(--text-secondary)]">Prueba ajustando el término de búsqueda o quitando alguno de los filtros activos.</p>
+        <button type="button" id="emptyResetBtn" class="mt-2 px-4 py-2 rounded-xl bg-teal-500 text-slate-950 font-semibold text-xs sm:text-sm hover:bg-teal-400 transition">
           Restablecer filtros
         </button>
       </div>
@@ -692,14 +837,21 @@
         </div>
         <div class="flex-1 min-w-0 space-y-4">
           <div class="flex flex-wrap items-center gap-2 text-xs">
-            <span class="font-mono font-bold px-2.5 py-1 rounded-lg text-white" style="background-color: ${escapeHtml(accent)};">${escapeHtml(book.subjectCode)}</span>
+            <span class="font-bold px-2.5 py-1 rounded-lg text-white" style="background-color: ${escapeHtml(accent)};">${escapeHtml(book.isExtra ? "VAR" : book.subjectCode)}</span>
             <span class="px-2.5 py-1 rounded-lg surface-soft font-medium">${escapeHtml(book.subjectName)}</span>
             <span class="px-2.5 py-1 rounded-lg surface-soft text-[var(--text-secondary)]">${escapeHtml(book.year)} · ${escapeHtml(book.semester)}</span>
           </div>
 
           <div>
-            <h3 class="text-xl sm:text-2xl font-extrabold leading-tight">${escapeHtml(book.title)}</h3>
-            <p class="text-sm sm:text-base text-[var(--text-secondary)] mt-1">${escapeHtml(book.author)}</p>
+            <h3 class="text-lg sm:text-xl font-bold leading-snug">${escapeHtml(book.title)}</h3>
+            <p class="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">${escapeHtml(book.author)}</p>
+          </div>
+
+          <div class="space-y-1.5">
+            <div class="text-[11px] uppercase tracking-wider text-[var(--text-muted)]">Temas detectados</div>
+            <div class="flex flex-wrap gap-1.5">
+              ${(book.topics || []).map((t) => `<button type="button" data-modal-topic="${escapeHtml(t)}" class="topic-chip px-2.5 py-1 rounded-lg text-xs">#${escapeHtml(t)}</button>`).join("")}
+            </div>
           </div>
 
           <div class="grid grid-cols-3 gap-2.5 text-xs">
@@ -709,7 +861,7 @@
             </div>
             <div class="surface-soft rounded-xl p-3">
               <div class="text-[var(--text-muted)]">Tamaño</div>
-              <div class="font-semibold font-mono mt-0.5">${escapeHtml(formatBytes(book.sizeBytes))}</div>
+              <div class="font-semibold mt-0.5">${escapeHtml(formatBytes(book.sizeBytes))}</div>
             </div>
             <div class="surface-soft rounded-xl p-3">
               <div class="text-[var(--text-muted)]">Actualizado</div>
@@ -718,23 +870,23 @@
           </div>
 
           <div class="flex flex-wrap gap-2.5 pt-1">
-            <a href="${escapeHtml(book.viewUrl)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-semibold text-sm transition">
+            <a href="${escapeHtml(book.viewUrl)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-semibold text-xs sm:text-sm transition">
               <i data-lucide="external-link" class="w-4 h-4"></i>
               <span>Leer en Drive</span>
             </a>
-            <a href="${escapeHtml(book.downloadUrl)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl surface-soft hover:border-teal-400 font-semibold text-sm transition">
+            <a href="${escapeHtml(book.downloadUrl)}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl surface-soft hover:border-teal-400 font-semibold text-xs sm:text-sm transition">
               <i data-lucide="download" class="w-4 h-4"></i>
               <span>Descargar</span>
             </a>
-            <button type="button" id="togglePreviewBtn" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl surface-soft hover:border-teal-400 font-semibold text-sm transition">
+            <button type="button" id="togglePreviewBtn" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl surface-soft hover:border-teal-400 font-semibold text-xs sm:text-sm transition">
               <i data-lucide="eye" class="w-4 h-4"></i>
               <span>${state.showPdfPreview ? "Ocultar vista previa" : "Vista previa aquí"}</span>
             </button>
-            <button type="button" id="modalCopyBtn" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl surface-soft hover:border-teal-400 text-sm transition" title="Copiar enlace">
+            <button type="button" id="modalCopyBtn" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl surface-soft hover:border-teal-400 text-xs sm:text-sm transition">
               <i data-lucide="link" class="w-4 h-4"></i>
               <span>Copiar link</span>
             </button>
-            <button type="button" id="modalFavBtn" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl surface-soft hover:border-teal-400 text-sm transition">
+            <button type="button" id="modalFavBtn" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl surface-soft hover:border-teal-400 text-xs sm:text-sm transition">
               <i data-lucide="bookmark" class="w-4 h-4 ${isFav ? "fill-teal-400 text-teal-400" : ""}"></i>
               <span>${isFav ? "Guardado" : "Favorito"}</span>
             </button>
@@ -763,6 +915,17 @@
     const favBtn = document.getElementById("modalFavBtn");
     if (favBtn) favBtn.addEventListener("click", () => toggleFavorite(book.id));
 
+    body.querySelectorAll("[data-modal-topic]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const t = btn.getAttribute("data-modal-topic");
+        state.selectedTopics.clear();
+        state.selectedTopics.add(t);
+        closeBookModal();
+        renderAll();
+        showToast(`Filtrando por tema: #${t}`);
+      });
+    });
+
     refreshIcons();
   }
 
@@ -773,7 +936,7 @@
     if (statusText) {
       statusText.textContent = CFG.APPS_SCRIPT_URL
         ? `Conectado a Google Apps Script (${state.catalog ? state.catalog.books.length : 0} libros).`
-        : "Modo catálogo local activo. Para sincronizar nuevos libros de Drive automáticamente sin tocar la web, despliega apps-script/Code.gs y pega su URL en config.js.";
+        : "Modo catálogo local activo. Para sincronizar nuevos libros de Drive automáticamente sin tocar la web, implementa apps-script/Code.gs y pega su URL /exec en config.js.";
     }
     modal.classList.remove("hidden");
     modal.classList.add("flex");
@@ -795,6 +958,7 @@
     state.semester = "all";
     state.subject = "all";
     state.onlyFavorites = false;
+    state.selectedTopics.clear();
     const searchInput = document.getElementById("searchInput");
     if (searchInput) searchInput.value = "";
     populateFilterOptions();
@@ -806,6 +970,7 @@
     const filtered = getFilteredBooks();
     renderStats(filtered);
     renderQuickSubjectPills();
+    renderTopicPills();
     renderCatalog(filtered);
     updateViewModeButtons();
   }
@@ -889,9 +1054,7 @@
     }
 
     const themeBtn = document.getElementById("themeToggleBtn");
-    if (themeBtn) {
-      themeBtn.addEventListener("click", () => applyTheme(state.theme === "dark" ? "light" : "dark"));
-    }
+    if (themeBtn) themeBtn.addEventListener("click", () => applyTheme(state.theme === "dark" ? "light" : "dark"));
 
     const viewGridBtn = document.getElementById("viewGridBtn");
     if (viewGridBtn) viewGridBtn.addEventListener("click", () => { state.viewMode = "grid"; renderAll(); });
@@ -912,20 +1075,11 @@
     if (closeSyncBtn) closeSyncBtn.addEventListener("click", closeSyncModal);
 
     const bookModal = document.getElementById("bookModal");
-    if (bookModal) {
-      bookModal.addEventListener("click", (e) => {
-        if (e.target === bookModal) closeBookModal();
-      });
-    }
+    if (bookModal) bookModal.addEventListener("click", (e) => { if (e.target === bookModal) closeBookModal(); });
 
     const syncModal = document.getElementById("syncModal");
-    if (syncModal) {
-      syncModal.addEventListener("click", (e) => {
-        if (e.target === syncModal) closeSyncModal();
-      });
-    }
+    if (syncModal) syncModal.addEventListener("click", (e) => { if (e.target === syncModal) closeSyncModal(); });
 
-    // Event delegation for subject pills & book cards
     const pillsHost = document.getElementById("subjectPills");
     if (pillsHost) {
       pillsHost.addEventListener("click", (e) => {
@@ -938,11 +1092,26 @@
       });
     }
 
+    const topicsHost = document.getElementById("topicPills");
+    if (topicsHost) {
+      topicsHost.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-topic-filter]");
+        if (!btn) return;
+        toggleTopic(btn.getAttribute("data-topic-filter"));
+      });
+    }
+
     const catalogHost = document.getElementById("catalogContent");
     if (catalogHost) {
       catalogHost.addEventListener("click", (e) => {
         if (e.target.closest("#emptyResetBtn")) {
           resetFilters();
+          return;
+        }
+        const topicBtn = e.target.closest("[data-topic-filter]");
+        if (topicBtn) {
+          e.stopPropagation();
+          toggleTopic(topicBtn.getAttribute("data-topic-filter"));
           return;
         }
         if (e.target.closest("[data-stop-prop]")) return;
@@ -955,13 +1124,10 @@
         }
 
         const card = e.target.closest("[data-open-book]");
-        if (card) {
-          openBookModal(card.getAttribute("data-open-book"));
-        }
+        if (card) openBookModal(card.getAttribute("data-open-book"));
       });
     }
 
-    // Keyboard shortcuts: '/' focuses search, 'Escape' closes modals
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         closeBookModal();
